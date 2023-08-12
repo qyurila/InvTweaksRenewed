@@ -156,13 +156,14 @@ public final class SortingHandler {
         List<Item> itemList = new ArrayList<>();
         for (Object o : items)
             if (o != null) {
-				if (o instanceof Item item)
-					itemList.add(item);
-				else if (o instanceof Block block)
-					itemList.add(block.asItem());
-				else if (o instanceof ItemStack stack)
-					itemList.add(stack.getItem());
-				else if (o instanceof String s) {
+                if (o instanceof Item)
+                    itemList.add((Item) o);
+                else if (o instanceof Block)
+                    itemList.add(((Block) o).asItem());
+                else if (o instanceof ItemStack)
+                    itemList.add(((ItemStack) o).getItem());
+                else if (o instanceof String) {
+                    String s = (String) o;
                     Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(s));
                     if (item != null)
                         itemList.add(item);
