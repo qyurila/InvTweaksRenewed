@@ -218,7 +218,8 @@ public class Sorting {
                                         List<Equivalence.Wrapper<ItemStack>> stackWs =
                                                 new ArrayList<>(gatheredSlots.keySet());
                                         stackWs.sort(
-                                                Comparator.comparing(Equivalence.Wrapper::get, Utils.FALLBACK_COMPARATOR));
+                                                // Comparator.comparing(Equivalence.Wrapper::get, Utils.FALLBACK_COMPARATOR));
+                                                SortingHandler::stackCompare);
 
                                         ListIterator<Slot> toIt = validSlots.listIterator();
                                         for (Equivalence.Wrapper<ItemStack> stackW : stackWs) {

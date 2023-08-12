@@ -55,7 +55,7 @@ public final class SortingHandler {
         SortingHandler::potionComplexityCompare,
         SortingHandler::potionTypeCompare));
 
-    private static int stackCompare(ItemStack stack1, ItemStack stack2) {
+    public static int stackCompare(ItemStack stack1, ItemStack stack2) {
         if (stack1 == stack2)
             return 0;
         if (stack1.isEmpty())

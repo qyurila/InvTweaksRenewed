@@ -41,9 +41,6 @@ public class Utils {
                     return Arrays.hashCode(objs.toArray());
                 }
             };
-    // TODO improve fallback comparator
-    public static final Comparator<ItemStack> FALLBACK_COMPARATOR =
-            Comparator.comparing(is -> is.getItem().getRegistryName());
 
     public static int gridToPlayerSlot(int row, int col) {
         if (row < 0 || row >= 4 || col < 0 || col >= 9) {
