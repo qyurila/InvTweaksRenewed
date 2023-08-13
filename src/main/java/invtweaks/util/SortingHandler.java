@@ -1,17 +1,15 @@
 package invtweaks.util;
 
-
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
-import net.minecraft.item.Item.getFoodProperties;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.Registry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -22,7 +20,7 @@ import java.util.function.Predicate;
 public final class SortingHandler {
 
     private static final Comparator<ItemStack> FALLBACK_COMPARATOR = jointComparator(Arrays.asList(
-        Comparator.comparingInt((ItemStack s) -> Item.getId(s.getItem())),
+        Comparator.comparingInt((ItemStack s) -> Item.getIdFromItem(s.getItem())),
         SortingHandler::damageCompare,
         (ItemStack s1, ItemStack s2) -> s2.getCount() - s1.getCount(),
         (ItemStack s1, ItemStack s2) -> s2.hashCode() - s1.hashCode(),
@@ -169,21 +167,21 @@ public final class SortingHandler {
     private static int nutrition(Food properties) {
         if (properties == null)
             return 0;
-        return properties.getNutrition();
+        return properties.getHealing();
     }
 
     private static int foodHealCompare(ItemStack stack1, ItemStack stack2) {
-        return nutrition(stack2.getItem().getFoodProperties()) - nutrition(stack1.getItem().getFoodProperties());
+        return nutrition(stack2.getItem().getFood()) - nutrition(stack1.getItem().getFood());
     }
 
     private static float saturation(Food properties) {
         if (properties == null)
             return 0;
-        return Math.min(20, properties.getNutrition() * properties.getSaturationModifier() * 2);
+        return Math.min(20, properties.getHealing() * properties.getSaturation() * 2);
     }
 
     private static int foodSaturationCompare(ItemStack stack1, ItemStack stack2) {
-        return (int) (saturation(stack2.getItem().getFoodProperties()) - saturation(stack1.getItem().getFoodProperties()));
+        return (int) (saturation(stack2.getItem().getFood()) - saturation(stack1.getItem().getFood()));
     }
 
     private static int enchantmentCompare(ItemStack stack1, ItemStack stack2) {
@@ -204,32 +202,32 @@ public final class SortingHandler {
     }
 
     private static int toolPowerCompare(ItemStack stack1, ItemStack stack2) {
-        Tier mat1 = ((DiggerItem) stack1.getItem()).getTier();
-        Tier mat2 = ((DiggerItem) stack2.getItem()).getTier();
-        return (int) (mat2.getSpeed() * 100 - mat1.getSpeed() * 100);
+        IItemTier mat1 = ((TieredItem) stack1.getItem()).getTier();
+        IItemTier mat2 = ((TieredItem) stack2.getItem()).getTier();
+        return (int) (mat2.getEfficiency() * 100 - mat1.getEfficiency() * 100);
     }
 
     private static int swordPowerCompare(ItemStack stack1, ItemStack stack2) {
-        Tier mat1 = ((SwordItem) stack1.getItem()).getTier();
-        Tier mat2 = ((SwordItem) stack2.getItem()).getTier();
-        return (int) (mat2.getAttackDamageBonus() * 100 - mat1.getAttackDamageBonus() * 100);
+        IItemTier mat1 = ((SwordItem) stack1.getItem()).getTier();
+        IItemTier mat2 = ((SwordItem) stack2.getItem()).getTier();
+        return (int) (mat2.getAttackDamage() * 100 - mat1.getAttackDamage() * 100);
     }
 
     private static int armorSlotAndToughnessCompare(ItemStack stack1, ItemStack stack2) {
         ArmorItem armor1 = (ArmorItem) stack1.getItem();
         ArmorItem armor2 = (ArmorItem) stack2.getItem();
 
-        EquipmentSlotType slot1 = armor1.getSlot();
-        EquipmentSlotType slot2 = armor2.getSlot();
+        EquipmentSlotType slot1 = armor1.getEquipmentSlot();
+        EquipmentSlotType slot2 = armor2.getEquipmentSlot();
 
         if (slot1 == slot2)
-            return armor2.getMaterial().getDefenseForSlot(slot2) - armor2.getMaterial().getDefenseForSlot(slot1);
+            return armor2.getArmorMaterial().getDamageReductionAmount(slot2) - armor2.getArmorMaterial().getDamageReductionAmount(slot1);
 
         return slot2.getIndex() - slot1.getIndex();
     }
 
     public static int damageCompare(ItemStack stack1, ItemStack stack2) {
-        return stack1.getDamageValue() - stack2.getDamageValue();
+        return stack1.getDamage() - stack2.getDamage();
     }
 
     public static int fallbackNBTCompare(ItemStack stack1, ItemStack stack2) {
@@ -247,35 +245,35 @@ public final class SortingHandler {
     }
 
     public static int potionComplexityCompare(ItemStack stack1, ItemStack stack2) {
-        List<MobEffectInstance> effects1 = PotionUtils.getCustomEffects(stack1);
-        List<MobEffectInstance> effects2 = PotionUtils.getCustomEffects(stack2);
+        List<EffectInstance> effects1 = PotionUtils.getEffectsFromStack(stack1);
+        List<EffectInstance> effects2 = PotionUtils.getEffectsFromStack(stack2);
 
         int totalPower1 = 0;
         int totalPower2 = 0;
-        for (MobEffectInstance inst : effects1)
+        for (EffectInstance inst : effects1)
             totalPower1 += inst.getAmplifier() * inst.getDuration();
-        for (MobEffectInstance inst : effects2)
+        for (EffectInstance inst : effects2)
             totalPower2 += inst.getAmplifier() * inst.getDuration();
 
         return totalPower2 - totalPower1;
     }
 
     public static int potionTypeCompare(ItemStack stack1, ItemStack stack2) {
-        Potion potion1 = PotionUtils.getPotion(stack1);
-        Potion potion2 = PotionUtils.getPotion(stack2);
+        Potion potion1 = PotionUtils.getPotionFromItem(stack1);
+        Potion potion2 = PotionUtils.getPotionFromItem(stack2);
 
         return Registry.POTION.getId(potion2) - Registry.POTION.getId(potion1);
     }
 
     private enum ItemType {
 
-        FOOD(ItemStack::isEdible, FOOD_COMPARATOR),
+        FOOD(ItemStack::isFood, FOOD_COMPARATOR),
         TORCH(list(Blocks.TORCH)),
         TOOL_PICKAXE(classPredicate(PickaxeItem.class), TOOL_COMPARATOR),
         TOOL_SHOVEL(classPredicate(ShovelItem.class), TOOL_COMPARATOR),
         TOOL_AXE(classPredicate(AxeItem.class), TOOL_COMPARATOR),
         TOOL_SWORD(classPredicate(SwordItem.class), SWORD_COMPARATOR),
-        TOOL_GENERIC(classPredicate(DiggerItem.class), TOOL_COMPARATOR),
+        TOOL_GENERIC(classPredicate(TieredItem.class), TOOL_COMPARATOR),
         ARMOR(classPredicate(ArmorItem.class), ARMOR_COMPARATOR),
         BOW(classPredicate(BowItem.class), BOW_COMPARATOR),
         CROSSBOW(classPredicate(CrossbowItem.class), BOW_COMPARATOR),
