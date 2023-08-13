@@ -21,7 +21,7 @@ displayName="Inventory TweaQs Renewed" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 # updateJSONURL="http://myurl.me/" #TODO add?
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="https://www.curseforge.com/minecraft/mc-mods/inventory-tweaks-renewed"
+displayURL="https://github.com/qyurila/InvTweaksRenewed"
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="logo.png"
 # A text field displayed in the mod UI
@@ -32,8 +32,7 @@ authors="Yuitakaa (Maintainer), StanleyMines (Contributor), Landmaster (Original
 description='''
 Inventory Tweaks, but for modern versions of Minecraft.
 * This is a slightly patched version that took Quark's sorting logic shamelessly.
-* This is not intended to be released as a separate mod;
-* it's just a quick drop-in replacement patch for ITR.
+* This is not intended to be released as a separate mod; it's just a quick drop-in replacement patch for ITR.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.invtweaks]] #optional
