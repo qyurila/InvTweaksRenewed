@@ -15,4 +15,4 @@ The Creative Commons Attribution-NonCommercial-ShareAlike 3.0 (CC BY-NC-SA 3.0) 
 ## Component Mapping
 
 - Others: Apache License 2.0
-- `src/main/java/invtweaks/util/SortingHandler.java`: CC BY-NC-SA 3.0
+- [`src/main/java/invtweaks/util/SortingHandler.java`](src/main/java/invtweaks/util/SortingHandler.java): CC BY-NC-SA 3.0
