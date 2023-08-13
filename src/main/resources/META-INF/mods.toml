@@ -4,7 +4,7 @@
 # Note that there are a couple of TOML lists in this file.
 # Find more information on toml format here:  https://github.com/toml-lang/toml
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
-license="Apache License, Version 2.0"
+license="Apache License 2.0 for base mod, CC BY-NC-SA 3.0 for SortingHandler"
 modLoader="javafml" #mandatory
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
 loaderVersion="[31,)"
@@ -17,7 +17,7 @@ modId="invtweaks" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 version="${version}" #mandatory
  # A display name for the mod
-displayName="Inventory Tweaks Renewed" #mandatory
+displayName="Inventory TweaQs Renewed" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 # updateJSONURL="http://myurl.me/" #TODO add?
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -27,10 +27,13 @@ logoFile="logo.png"
 # A text field displayed in the mod UI
 credits="JimeoWan, Kobata for the original 1.12.2 mod"
 # A text field displayed in the mod UI
-authors="Yuitakaa(Maintainer), StanleyMines(Contributor), Landmaster (Original Author)"
+authors="Yuitakaa (Maintainer), StanleyMines (Contributor), Landmaster (Original Author), QriLa (Patch)"
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 Inventory Tweaks, but for modern versions of Minecraft.
+* This is a slightly patched version that took Quark's sorting logic shamelessly.
+* This is not intended to be released as a separate mod;
+* it's just a quick drop-in replacement patch for ITR.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.invtweaks]] #optional
