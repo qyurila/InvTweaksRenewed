@@ -63,13 +63,6 @@ public final class SortingHandler {
         if (stack2.isEmpty())
             return 1;
 
-        if (hasCustomSorting(stack1) && hasCustomSorting(stack2)) {
-            ICustomSorting sort1 = getCustomSorting(stack1);
-            ICustomSorting sort2 = getCustomSorting(stack2);
-            if (sort1.getSortingCategory().equals(sort2.getSortingCategory()))
-                return sort1.getItemComparator().compare(stack1, stack2);
-        }
-
         ItemType type1 = getType(stack1);
         ItemType type2 = getType(stack2);
 
@@ -101,7 +94,7 @@ public final class SortingHandler {
 
     public static Comparator<ItemStack> jointComparator(Comparator<ItemStack> finalComparator, List<Comparator<ItemStack>> otherComparators) {
         if (otherComparators == null)
-            return jointComparator(List.of(finalComparator));
+            return jointComparator(Arrays.asList(finalComparator));
 
         List<Comparator<ItemStack>> newList = new ArrayList<>(otherComparators);
         newList.add(finalComparator);
@@ -272,14 +265,6 @@ public final class SortingHandler {
         Potion potion2 = PotionUtils.getPotion(stack2);
 
         return Registry.POTION.getId(potion2) - Registry.POTION.getId(potion1);
-    }
-
-    static boolean hasCustomSorting(ItemStack stack) {
-        return stack.getCapability(QuarkCapabilities.SORTING, null).isPresent();
-    }
-
-    static ICustomSorting getCustomSorting(ItemStack stack) {
-        return stack.getCapability(QuarkCapabilities.SORTING, null).orElse(null);
     }
 
     private enum ItemType {
